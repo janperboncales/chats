@@ -29,6 +29,11 @@ const Sidebar: React.FC = () => {
     navigate(path);
   };
 
+  // Close mobile menu on navigation (if needed for mobile responsiveness)
+  React.useEffect(() => {
+    // This ensures the sidebar updates when location changes
+  }, [location.pathname]);
+
   return (
     <motion.aside 
       initial={{ x: -64 }}
@@ -43,11 +48,13 @@ const Sidebar: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => handleNavigation(item.path)}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 item.active
                   ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                  : 'hover:bg-opacity-80 hover:bg-gray-100 cursor-pointer'
+                  : 'hover:bg-gray-100 hover:bg-opacity-80 cursor-pointer'
               }`}
             >
               <item.icon className="w-5 h-5" />

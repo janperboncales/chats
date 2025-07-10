@@ -74,33 +74,48 @@ export const useRealtimeSearch = (query: string) => {
     const searchUsers = async () => {
       if (!query.trim()) {
         setResults({ users: [], posts: [] });
+        setLoading(false);
         return;
       }
 
       setLoading(true);
       
-      // Search users
-      const { data: users } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
-        .limit(10);
+      try {
+        // Search users
+        const { data: users, error: usersError } = await supabase
+          .from('profiles')
+          .select('*')
+          .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
+          .limit(10);
 
-      // Search posts
-      const { data: posts } = await supabase
-        .from('posts')
-        .select(`
-          *,
-          user:profiles(username, full_name, avatar_url)
-        `)
-        .ilike('content', `%${query}%`)
-        .limit(10);
+        if (usersError) {
+          console.error('Error searching users:', usersError);
+        }
 
-      setResults({
-        users: users || [],
-        posts: posts || []
-      });
-      setLoading(false);
+        // Search posts
+        const { data: posts, error: postsError } = await supabase
+          .from('posts')
+          .select(`
+            *,
+            user:profiles(username, full_name, avatar_url)
+          `)
+          .ilike('content', `%${query}%`)
+          .limit(10);
+
+        if (postsError) {
+          console.error('Error searching posts:', postsError);
+        }
+
+        setResults({
+          users: users || [],
+          posts: posts || []
+        });
+      } catch (error) {
+        console.error('Search error:', error);
+        setResults({ users: [], posts: [] });
+      } finally {
+        setLoading(false);
+      }
     };
 
     const debounceTimer = setTimeout(searchUsers, 300);

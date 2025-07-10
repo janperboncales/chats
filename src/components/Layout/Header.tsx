@@ -31,16 +31,31 @@ const Header: React.FC = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery(''); // Clear search after navigation
     }
   };
 
   const handleChatClick = () => {
     navigate('/chat');
+    setShowUserMenu(false);
+    setShowNotifications(false);
   };
 
   const handleNotificationClick = () => {
     setShowNotifications(!showNotifications);
+    setShowUserMenu(false);
   };
+
+  // Close dropdowns when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = () => {
+      setShowUserMenu(false);
+      setShowNotifications(false);
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 ${themeClasses[theme]} border-b backdrop-blur-md bg-opacity-90`}>
@@ -140,6 +155,11 @@ const Header: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowUserMenu(!showUserMenu);
+                  setShowNotifications(false);
+                }}
                 className="flex items-center space-x-2 p-2 rounded-full hover:bg-opacity-80"
               >
                 <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
@@ -151,6 +171,7 @@ const Header: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
+                  onClick={(e) => e.stopPropagation()}
                   className={`absolute right-0 mt-2 w-48 ${themeClasses[theme]} rounded-lg shadow-lg border py-2`}
                 >
                   <button 

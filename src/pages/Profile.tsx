@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'posts' | 'about' | 'friends'>('posts');
   const [isEditing, setIsEditing] = useState(false);
-  const { theme } = useAuth();
+  const { theme } = useTheme();
   const { user } = useAuth();
 
   const [profile, setProfile] = useState({
