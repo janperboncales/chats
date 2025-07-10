@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Layout from '../components/Layout/Layout';
 import PostCard from '../components/Feed/PostCard';
 import { useTheme } from '../contexts/ThemeContext';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useRealtimeSearch } from '../hooks/useRealtime';
 import { friendsService } from '../services/api';
 
